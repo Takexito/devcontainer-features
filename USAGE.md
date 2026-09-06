@@ -7,33 +7,35 @@ netcup VPS · 8 vCPU · 15 GiB · Debian 13 · порты 2222+
 
 ```sh
 git clone <url> ~/projects/my-app     # или mkdir, если с нуля
-newdev my-app                         # ~15 с, порт подберёт сам
+newdev my-app                         # ~15 с
 ```
 
-На своей машине — обновить ssh-конфиг (нужно, только когда список проектов
-изменился):
+Всё. Подключаться — `ssh my-app.dev`, дописывать ничего не надо.
 
-```sh
-ssh vps cat .config/devhosts > ~/.ssh/config.d/devhosts
-```
-
-В Zed: `Ctrl+Alt+Shift+O` → `my-app` → путь `/workspaces/my-app`.
+В Zed: `Ctrl+Alt+Shift+O` → `my-app.dev` → путь `/workspaces/my-app`.
 
 ## Команды
 
 | | |
 |---|---|
 | `newdev <name> [port]` | создать контейнер и запись в ssh-конфиге |
-| `lsdev [-a]` | что запущено: порт, CPU, память |
+| `lsdev [-a]` | что запущено: адрес, CPU, память |
 | `rmdev <name> [-y]` | снести контейнер и тома проекта. Код остаётся |
 
 ## Разовая настройка
 
-На клиенте — первой строкой в `~/.ssh/config`:
+На клиенте — одна запись в ssh-конфиге на все проекты, навсегда:
 
 ```
-Include ~/.ssh/config.d/devhosts
+Host *.dev
+    User dev
+    ProxyCommand ssh vps devproxy %h
 ```
+
+`devproxy` на сервере находит контейнер по имени и пробрасывает поток на его
+sshd. Поэтому портов нет вообще: ни выбирать, ни помнить, ни бояться
+столкновений. Ключ хоста лежит в томе проекта и переживает пересборку, так что
+клиент не примет её за подмену.
 
 В любом контейнере — авторизации общие для всех проектов:
 
@@ -51,7 +53,6 @@ codex login --device-auth
 | `ghcr.io/takexito/android-dev:1` | образ: JDK 17, Android SDK 34+35, Kotlin LSP, gitleaks, tmux, gh, агенты |
 | `Takexito/devcontainer-features` | фичи и конфиг образа в `images/android` |
 | `Takexito/dotfiles` | git-identity, шелл, tmux, pre-commit |
-| `~/.config/devhosts` | накопленные блоки для ssh-конфига |
 
 ## Грабли
 
