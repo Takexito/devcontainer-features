@@ -1,0 +1,10 @@
+{
+  "sdk-with-java": {
+    "image": "mcr.microsoft.com/devcontainers/base:debian",
+    "remoteUser": "vscode",
+    "features": {
+      "ghcr.io/devcontainers/features/java:1": { "version": "17" },
+      "android-sdk": { "platforms": "34", "buildTools": "34.0.0" }
+    }
+  }
+}

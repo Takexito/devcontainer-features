@@ -1,0 +1,13 @@
+{
+  "id": "gitleaks",
+  "version": "1.0.0",
+  "name": "gitleaks",
+  "description": "Ставит gitleaks — сканер секретов. Нужен pre-commit хуку из дотфайлов: без бинарника хук предупреждает, но коммит не блокирует.",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "8.30.1",
+      "description": "Версия gitleaks. 'latest' берёт последний релиз с GitHub."
+    }
+  }
+}

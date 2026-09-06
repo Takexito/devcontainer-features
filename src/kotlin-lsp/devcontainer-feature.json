@@ -1,0 +1,13 @@
+{
+  "id": "kotlin-lsp",
+  "version": "1.0.0",
+  "name": "Kotlin LSP",
+  "description": "Ставит официальный Kotlin LSP от JetBrains. ВАЖНО: сборки протухают через 30 дней — это осознанное решение JetBrains, сервер собран на EAP-платформе IntelliJ. При ошибке 'This build of intellij-server has expired' подними version. Свежие ссылки иногда появляются в комментариях к issue раньше, чем в GitHub Releases.",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "263.4421.0",
+      "description": "Версия kotlin-server. Список: github.com/Kotlin/kotlin-lsp/releases"
+    }
+  }
+}

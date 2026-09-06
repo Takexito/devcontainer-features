@@ -1,0 +1,10 @@
+{
+  "codex-with-node": {
+    "image": "mcr.microsoft.com/devcontainers/base:debian",
+    "remoteUser": "vscode",
+    "features": {
+      "ghcr.io/devcontainers/features/node:1": {},
+      "codex-cli": {}
+    }
+  }
+}

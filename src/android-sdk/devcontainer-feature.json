@@ -1,0 +1,32 @@
+{
+  "id": "android-sdk",
+  "version": "1.0.0",
+  "name": "Android SDK",
+  "description": "Ставит Android cmdline-tools и запрошенные платформы с build-tools. Лицензии принимаются автоматически. Требует JDK в образе или фичу java перед собой.",
+  "options": {
+    "platforms": {
+      "type": "string",
+      "default": "34",
+      "description": "Уровни API через запятую, например '34,35'."
+    },
+    "buildTools": {
+      "type": "string",
+      "default": "34.0.0",
+      "description": "Версии build-tools через запятую."
+    },
+    "cmdlineToolsVersion": {
+      "type": "string",
+      "default": "15859902",
+      "description": "Номер сборки commandlinetools с dl.google.com."
+    }
+  },
+  "containerEnv": {
+    "ANDROID_HOME": "/opt/android-sdk",
+    "ANDROID_SDK_ROOT": "/opt/android-sdk",
+    "PATH": "/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools:${PATH}"
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/java",
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}

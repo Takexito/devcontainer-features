@@ -1,0 +1,17 @@
+{
+  "id": "codex-cli",
+  "version": "1.0.0",
+  "name": "OpenAI Codex CLI",
+  "description": "Ставит Codex CLI из npm. Официальной фичи у OpenAI нет. Авторизацию удобно держать в томе на /home/<user>/.codex — тогда логин нужен один раз на все контейнеры: codex login --device-auth",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Версия пакета @openai/codex."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/node",
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}
