@@ -1,0 +1,19 @@
+{
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "1.8.3",
+      "resolved": "ghcr.io/devcontainers/features/java@sha256:61a839211feda1e2a1f10646648a948e733e4d98d770f3a4b6698a3c5fc92abe",
+      "integrity": "sha256:61a839211feda1e2a1f10646648a948e733e4d98d770f3a4b6698a3c5fc92abe"
+    },
+    "ghcr.io/takexito/devcontainer-features/android-sdk:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/takexito/devcontainer-features/android-sdk@sha256:473c0228322594f53cd538897e7c0061865ca5f23f7a900fed96b678eaed4894",
+      "integrity": "sha256:473c0228322594f53cd538897e7c0061865ca5f23f7a900fed96b678eaed4894"
+    },
+    "ghcr.io/takexito/devcontainer-features/kotlin-lsp:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/takexito/devcontainer-features/kotlin-lsp@sha256:3b6bd3a73ef28fec9f0057c9dc40778c9156c854cf5a3f1b9c0802de9f8b063f",
+      "integrity": "sha256:3b6bd3a73ef28fec9f0057c9dc40778c9156c854cf5a3f1b9c0802de9f8b063f"
+    }
+  }
+}

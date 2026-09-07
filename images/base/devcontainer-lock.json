@@ -1,0 +1,44 @@
+{
+  "features": {
+    "ghcr.io/devcontainers-extra/features/apt-packages:1": {
+      "version": "1.0.6",
+      "resolved": "ghcr.io/devcontainers-extra/features/apt-packages@sha256:55c54412112da81b9381e470cdbbe55278564950d1ff536ce925b1e8e096babd",
+      "integrity": "sha256:55c54412112da81b9381e470cdbbe55278564950d1ff536ce925b1e8e096babd"
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "version": "2.5.9",
+      "resolved": "ghcr.io/devcontainers/features/common-utils@sha256:cb0c4d3c276f157eed17935747e364178d75fee17f55c4e129966f64633deb3a",
+      "integrity": "sha256:cb0c4d3c276f157eed17935747e364178d75fee17f55c4e129966f64633deb3a"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "1.1.2",
+      "resolved": "ghcr.io/devcontainers/features/github-cli@sha256:7c409bf6316ffd85f04fd92fba85a744282639e603417dd4796409866bdb6805",
+      "integrity": "sha256:7c409bf6316ffd85f04fd92fba85a744282639e603417dd4796409866bdb6805"
+    },
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "1.1.0",
+      "resolved": "ghcr.io/devcontainers/features/sshd@sha256:f5251b8e4325f68f7280973c6cd65daff414449c66f240621502d4e8e74eb7ee",
+      "integrity": "sha256:f5251b8e4325f68f7280973c6cd65daff414449c66f240621502d4e8e74eb7ee"
+    },
+    "ghcr.io/takexito/devcontainer-features/claude-code:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/takexito/devcontainer-features/claude-code@sha256:11bb0202346e7ea6c53ba61ca7b431d5d6599fc40e6b421d9b10a5af01415478",
+      "integrity": "sha256:11bb0202346e7ea6c53ba61ca7b431d5d6599fc40e6b421d9b10a5af01415478"
+    },
+    "ghcr.io/takexito/devcontainer-features/codex-cli:2": {
+      "version": "2.0.0",
+      "resolved": "ghcr.io/takexito/devcontainer-features/codex-cli@sha256:f050eed402316a0ec334252497eb6382d3b549f3f60a58e54d80ba3e9cf515e8",
+      "integrity": "sha256:f050eed402316a0ec334252497eb6382d3b549f3f60a58e54d80ba3e9cf515e8"
+    },
+    "ghcr.io/takexito/devcontainer-features/gitleaks:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/takexito/devcontainer-features/gitleaks@sha256:96a3c25cc27c709978e9c7e1a111d13e303f43175712fff035b7b9bd1606d16a",
+      "integrity": "sha256:96a3c25cc27c709978e9c7e1a111d13e303f43175712fff035b7b9bd1606d16a"
+    },
+    "ghcr.io/takexito/devcontainer-features/mise:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/takexito/devcontainer-features/mise@sha256:611234b38f389ff5632f0c7ac3bcfb79620d8e6c9fbf1eec20864a6fae29f438",
+      "integrity": "sha256:611234b38f389ff5632f0c7ac3bcfb79620d8e6c9fbf1eec20864a6fae29f438"
+    }
+  }
+}

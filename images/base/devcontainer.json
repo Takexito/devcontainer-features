@@ -1,0 +1,23 @@
+{
+  "name": "base-dev",
+  "image": "mcr.microsoft.com/devcontainers/base:debian",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false,
+      "installOhMyZsh": false,
+      "username": "dev",
+      "userUid": "1001",
+      "userGid": "1001"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/sshd:1": {},
+    "ghcr.io/devcontainers-extra/features/apt-packages:1": {
+      "packages": "tmux,ripgrep,fd-find,build-essential,pkg-config,git-lfs"
+    },
+    "ghcr.io/takexito/devcontainer-features/gitleaks:1": {},
+    "ghcr.io/takexito/devcontainer-features/mise:1": {},
+    "ghcr.io/takexito/devcontainer-features/claude-code:1": {},
+    "ghcr.io/takexito/devcontainer-features/codex-cli:2": {}
+  },
+  "remoteUser": "dev"
+}

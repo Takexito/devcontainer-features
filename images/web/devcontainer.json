@@ -1,0 +1,10 @@
+{
+  "name": "web-dev",
+  "image": "ghcr.io/takexito/base-dev:1",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    }
+  },
+  "remoteUser": "dev"
+}

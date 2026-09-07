@@ -1,0 +1,19 @@
+{
+  "features": {
+    "ghcr.io/devcontainers-extra/features/apt-packages:1": {
+      "version": "1.0.6",
+      "resolved": "ghcr.io/devcontainers-extra/features/apt-packages@sha256:55c54412112da81b9381e470cdbbe55278564950d1ff536ce925b1e8e096babd",
+      "integrity": "sha256:55c54412112da81b9381e470cdbbe55278564950d1ff536ce925b1e8e096babd"
+    },
+    "ghcr.io/devcontainers/features/rust:1": {
+      "version": "1.5.1",
+      "resolved": "ghcr.io/devcontainers/features/rust@sha256:f7afd923fd283db88ca961342ae65ea63a8c95bcf86e42c4c363f43bc4ba26a5",
+      "integrity": "sha256:f7afd923fd283db88ca961342ae65ea63a8c95bcf86e42c4c363f43bc4ba26a5"
+    },
+    "ghcr.io/takexito/devcontainer-features/cargo-nextest:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/takexito/devcontainer-features/cargo-nextest@sha256:d14d58a39ebcdd9efcd86a3ce7edd401c261a954380e9fa403fbbdf1e6b39d27",
+      "integrity": "sha256:d14d58a39ebcdd9efcd86a3ce7edd401c261a954380e9fa403fbbdf1e6b39d27"
+    }
+  }
+}

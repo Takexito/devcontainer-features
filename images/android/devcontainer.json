@@ -1,33 +1,17 @@
 {
   "name": "android-dev",
-  "image": "mcr.microsoft.com/devcontainers/base:debian",
+  "image": "ghcr.io/takexito/base-dev:1",
   "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": false,
-      "installOhMyZsh": false,
-      "username": "dev",
-      "userUid": "1001",
-      "userGid": "1001"
-    },
     "ghcr.io/devcontainers/features/java:1": {
       "version": "17",
       "installGradle": false,
       "installMaven": false
     },
-    "ghcr.io/devcontainers/features/node:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/sshd:1": {},
-    "ghcr.io/devcontainers-extra/features/apt-packages:1": {
-      "packages": "tmux,unzip,zip,less"
-    },
-    "ghcr.io/takexito/devcontainer-features/gitleaks:1": {},
     "ghcr.io/takexito/devcontainer-features/android-sdk:1": {
       "platforms": "34,35",
       "buildTools": "34.0.0,35.0.0"
     },
-    "ghcr.io/takexito/devcontainer-features/kotlin-lsp:1": {},
-    "ghcr.io/takexito/devcontainer-features/codex-cli:1": {},
-    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
+    "ghcr.io/takexito/devcontainer-features/kotlin-lsp:1": {}
   },
   "remoteUser": "dev"
 }

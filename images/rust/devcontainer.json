@@ -1,0 +1,15 @@
+{
+  "name": "rust-dev",
+  "image": "ghcr.io/takexito/base-dev:1",
+  "features": {
+    "ghcr.io/devcontainers/features/rust:1": {
+      "profile": "minimal",
+      "components": "rust-analyzer,rust-src,rustfmt,clippy"
+    },
+    "ghcr.io/devcontainers-extra/features/apt-packages:1": {
+      "packages": "libssl-dev"
+    },
+    "ghcr.io/takexito/devcontainer-features/cargo-nextest:1": {}
+  },
+  "remoteUser": "dev"
+}
