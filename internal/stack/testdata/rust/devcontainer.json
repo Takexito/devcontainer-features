@@ -1,0 +1,38 @@
+{
+  "name": "demo",
+  "image": "ghcr.io/takexito/rust-dev:1",
+  "customizations": {
+    "devc": {
+      "stack": "rust",
+      "generator": 1,
+      "mem": "8g",
+      "cpus": "6"
+    }
+  },
+  "updateRemoteUserUID": false,
+  "containerEnv": {
+    "CARGO_TARGET_DIR": "/home/dev/target",
+    "CLAUDE_CONFIG_DIR": "/home/dev/.claude",
+    "PROJECT_NAME": "demo"
+  },
+  "mounts": [
+    "source=demo-ssh,target=/home/dev/.ssh,type=volume",
+    "source=demo-mise,target=/home/dev/.local/share/mise,type=volume",
+    "source=demo-target,target=/home/dev/target,type=volume",
+    "source=dev-cargo-registry,target=/usr/local/cargo/registry,type=volume",
+    "source=dev-claude,target=/home/dev/.claude,type=volume",
+    "source=dev-codex,target=/home/dev/.codex,type=volume",
+    "source=dev-gh,target=/home/dev/.config/gh,type=volume",
+    "source=${localEnv:HOME}/.ssh/authorized_keys,target=/etc/ssh/authorized_keys.host,type=bind,readonly"
+  ],
+  "runArgs": [
+    "--name=demo",
+    "--hostname=demo",
+    "--restart=unless-stopped",
+    "--memory=8g",
+    "--memory-swap=8g",
+    "--cpus=6"
+  ],
+  "remoteUser": "dev",
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
+}

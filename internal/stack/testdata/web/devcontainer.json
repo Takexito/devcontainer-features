@@ -1,0 +1,37 @@
+{
+  "name": "demo",
+  "image": "ghcr.io/takexito/web-dev:1",
+  "customizations": {
+    "devc": {
+      "stack": "web",
+      "generator": 1,
+      "mem": "4g",
+      "cpus": "4"
+    }
+  },
+  "updateRemoteUserUID": false,
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/dev/.claude",
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0",
+    "PROJECT_NAME": "demo"
+  },
+  "mounts": [
+    "source=demo-ssh,target=/home/dev/.ssh,type=volume",
+    "source=demo-mise,target=/home/dev/.local/share/mise,type=volume",
+    "source=dev-npm,target=/home/dev/.npm,type=volume",
+    "source=dev-claude,target=/home/dev/.claude,type=volume",
+    "source=dev-codex,target=/home/dev/.codex,type=volume",
+    "source=dev-gh,target=/home/dev/.config/gh,type=volume",
+    "source=${localEnv:HOME}/.ssh/authorized_keys,target=/etc/ssh/authorized_keys.host,type=bind,readonly"
+  ],
+  "runArgs": [
+    "--name=demo",
+    "--hostname=demo",
+    "--restart=unless-stopped",
+    "--memory=4g",
+    "--memory-swap=4g",
+    "--cpus=4"
+  ],
+  "remoteUser": "dev",
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
+}

@@ -1,0 +1,42 @@
+{
+  "name": "demo",
+  "image": "ghcr.io/takexito/android-dev:1",
+  "customizations": {
+    "devc": {
+      "stack": "android",
+      "generator": 1,
+      "mem": "10g",
+      "cpus": "6"
+    }
+  },
+  "updateRemoteUserUID": false,
+  "containerEnv": {
+    "ANDROID_USER_HOME": "/home/dev/.android",
+    "CLAUDE_CONFIG_DIR": "/home/dev/.claude",
+    "GRADLE_USER_HOME": "/home/dev/.gradle",
+    "KONAN_DATA_DIR": "/home/dev/.konan",
+    "PROJECT_NAME": "demo"
+  },
+  "mounts": [
+    "source=demo-ssh,target=/home/dev/.ssh,type=volume",
+    "source=demo-mise,target=/home/dev/.local/share/mise,type=volume",
+    "source=demo-gradle,target=/home/dev/.gradle,type=volume",
+    "source=demo-konan,target=/home/dev/.konan,type=volume",
+    "source=demo-android,target=/home/dev/.android,type=volume",
+    "source=dev-kotlin-lsp-kmp,target=/opt/kmp,type=volume,readonly",
+    "source=dev-claude,target=/home/dev/.claude,type=volume",
+    "source=dev-codex,target=/home/dev/.codex,type=volume",
+    "source=dev-gh,target=/home/dev/.config/gh,type=volume",
+    "source=${localEnv:HOME}/.ssh/authorized_keys,target=/etc/ssh/authorized_keys.host,type=bind,readonly"
+  ],
+  "runArgs": [
+    "--name=demo",
+    "--hostname=demo",
+    "--restart=unless-stopped",
+    "--memory=10g",
+    "--memory-swap=10g",
+    "--cpus=6"
+  ],
+  "remoteUser": "dev",
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
+}
