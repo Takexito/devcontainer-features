@@ -1,0 +1,16 @@
+{
+  "id": "cargo-nextest",
+  "version": "1.0.0",
+  "name": "cargo-nextest",
+  "description": "Ставит cargo-nextest готовым бинарником в $CARGO_HOME/bin. Требует фичу rust перед собой.",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Версия, например 0.9.143, или latest."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/rust"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "mise",
+  "version": "1.0.0",
+  "name": "mise",
+  "description": "Ставит mise из apt-репозитория jdx и добавляет его шимы в PATH login-шеллов. Тулчейны не ставит: их тянет mise.toml проекта при первом заходе в каталог.",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Версия пакета mise в apt, например 2026.9.1, или latest."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}

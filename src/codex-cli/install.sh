@@ -1,20 +1,33 @@
 #!/usr/bin/env bash
+# Ставит Codex CLI статическим бинарником из GitHub Releases — без Node
+# и npm: агентам Node ни к чему, а тащить его ради одного пакета жалко.
 set -euo pipefail
 
 VERSION="${VERSION:-latest}"
-USERNAME="${_REMOTE_USER:-root}"
 
-command -v npm >/dev/null 2>&1 || {
-    echo "npm не найден — добавь ghcr.io/devcontainers/features/node перед этой фичей" >&2
-    exit 1
-}
-
-# Ставим от имени пользователя, а не root: фича node кладёт nvm в каталог,
-# принадлежащий ему, и установка под root там падает.
-if [ "$USERNAME" != "root" ]; then
-    su - "$USERNAME" -c "npm install -g @openai/codex@${VERSION}"
+case "$(uname -m)" in
+    x86_64)  ARCH=x86_64 ;;
+    aarch64) ARCH=aarch64 ;;
+    *) echo "codex-cli: неподдерживаемая архитектура $(uname -m)" >&2; exit 1 ;;
+esac
+ASSET="codex-${ARCH}-unknown-linux-musl"
+if [ "$VERSION" = "latest" ]; then
+    URL="https://github.com/openai/codex/releases/latest/download/${ASSET}.tar.gz"
 else
-    npm install -g "@openai/codex@${VERSION}"
+    URL="https://github.com/openai/codex/releases/download/rust-v${VERSION}/${ASSET}.tar.gz"
 fi
 
-echo "codex установлен"
+if ! command -v curl >/dev/null 2>&1; then
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y --no-install-recommends curl ca-certificates
+    rm -rf /var/lib/apt/lists/*
+fi
+
+TMP=$(mktemp -d)
+trap 'rm -rf "$TMP"' EXIT
+curl -fsSL "$URL" -o "$TMP/codex.tar.gz"
+tar -xzf "$TMP/codex.tar.gz" -C "$TMP"
+# В архиве один файл, названный по платформе.
+install -m 0755 "$TMP/$ASSET" /usr/local/bin/codex
+codex --version

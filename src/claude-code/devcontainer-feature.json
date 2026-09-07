@@ -1,0 +1,16 @@
+{
+  "id": "claude-code",
+  "version": "1.0.0",
+  "name": "Claude Code",
+  "description": "Ставит Claude Code нативным установщиком, без Node и npm. Бинарник живёт в ~/.local/bin пользователя; конфиг и авторизацию удобно держать в томе на ~/.claude — тогда логин нужен один раз на все контейнеры.",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "stable",
+      "description": "stable, latest или конкретная версия, например 2.1.263."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "nextest-with-rust": {
+    "image": "mcr.microsoft.com/devcontainers/base:debian",
+    "remoteUser": "vscode",
+    "features": {
+      "ghcr.io/devcontainers/features/rust:1": { "profile": "minimal" },
+      "cargo-nextest": {}
+    }
+  }
+}
