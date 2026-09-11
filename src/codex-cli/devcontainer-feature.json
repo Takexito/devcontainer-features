@@ -1,8 +1,8 @@
 {
   "id": "codex-cli",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "name": "Codex CLI",
-  "description": "Ставит Codex CLI статическим бинарником из GitHub Releases — без Node и npm. Авторизацию удобно держать в томе на /home/<user>/.codex — тогда логин нужен один раз на все контейнеры: codex login --device-auth.",
+  "description": "Ставит полный статический Codex bundle из GitHub Releases, включая Code Mode host, — без Node и npm. Авторизацию удобно держать в томе на /home/<user>/.codex — тогда логин нужен один раз на все контейнеры: codex login --device-auth.",
   "options": {
     "version": {
       "type": "string",

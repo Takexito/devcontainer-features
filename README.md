@@ -13,7 +13,7 @@
 | `gitleaks` | сканер секретов; нужен pre-commit хуку — без бинарника он предупреждает, но коммит не блокирует |
 | `mise` | менеджер тулчейнов из apt-репозитория jdx, как на хосте; шимы в PATH login-шеллов. Тулчейны ставит `mise.toml` проекта |
 | `claude-code` | Claude Code нативным установщиком: без Node, бинарник в `~/.local/bin` пользователя |
-| `codex-cli` | OpenAI Codex CLI статическим бинарником из GitHub Releases; официальной фичи у OpenAI нет, а npm ради одного пакета жалко |
+| `codex-cli` | полный статический OpenAI Codex bundle из GitHub Releases, включая Code Mode host; без Node и npm |
 | `cargo-nextest` | готовый бинарник в `$CARGO_HOME/bin`; `cargo install` собирал бы его минуты |
 | `android-sdk` | cmdline-tools, платформы и build-tools; выставляет `ANDROID_HOME` и `PATH` |
 | `kotlin-lsp` | официальный Kotlin LSP от JetBrains |

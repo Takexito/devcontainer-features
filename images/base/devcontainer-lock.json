@@ -26,9 +26,9 @@
       "integrity": "sha256:11bb0202346e7ea6c53ba61ca7b431d5d6599fc40e6b421d9b10a5af01415478"
     },
     "ghcr.io/takexito/devcontainer-features/codex-cli:2": {
-      "version": "2.0.0",
-      "resolved": "ghcr.io/takexito/devcontainer-features/codex-cli@sha256:f050eed402316a0ec334252497eb6382d3b549f3f60a58e54d80ba3e9cf515e8",
-      "integrity": "sha256:f050eed402316a0ec334252497eb6382d3b549f3f60a58e54d80ba3e9cf515e8"
+      "version": "2.1.0",
+      "resolved": "ghcr.io/takexito/devcontainer-features/codex-cli@sha256:6c232e8efc9246da927c01a58164b7af1798262d7b7112074b08f9b781f64b69",
+      "integrity": "sha256:6c232e8efc9246da927c01a58164b7af1798262d7b7112074b08f9b781f64b69"
     },
     "ghcr.io/takexito/devcontainer-features/gitleaks:1": {
       "version": "1.0.0",
