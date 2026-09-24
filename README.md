@@ -10,6 +10,7 @@
 
 | Фича | Зачем |
 |---|---|
+| `gitlab-cli` | GitLab CLI (`glab`) из официального release-архива с проверкой SHA-256 checksum |
 | `gitleaks` | сканер секретов; нужен pre-commit хуку — без бинарника он предупреждает, но коммит не блокирует |
 | `mise` | менеджер тулчейнов из apt-репозитория jdx, как на хосте; шимы в PATH login-шеллов. Тулчейны ставит `mise.toml` проекта |
 | `claude-code` | Claude Code нативным установщиком: без Node, бинарник в `~/.local/bin` пользователя |
@@ -26,6 +27,7 @@
   "ghcr.io/Takexito/devcontainer-features/mise:1": {},
   "ghcr.io/Takexito/devcontainer-features/claude-code:1": {},
   "ghcr.io/Takexito/devcontainer-features/codex-cli:2": {},
+  "ghcr.io/Takexito/devcontainer-features/gitlab-cli:1": {},
   "ghcr.io/Takexito/devcontainer-features/gitleaks:1": {},
   "ghcr.io/devcontainers/features/rust:1": {},
   "ghcr.io/Takexito/devcontainer-features/cargo-nextest:1": {}

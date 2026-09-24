@@ -14,6 +14,7 @@
     "ghcr.io/devcontainers-extra/features/apt-packages:1": {
       "packages": "tmux,ripgrep,fd-find,build-essential,pkg-config,git-lfs"
     },
+    "ghcr.io/takexito/devcontainer-features/gitlab-cli:1": {},
     "ghcr.io/takexito/devcontainer-features/gitleaks:1": {},
     "ghcr.io/takexito/devcontainer-features/mise:1": {},
     "ghcr.io/takexito/devcontainer-features/claude-code:1": {},

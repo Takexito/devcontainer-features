@@ -1,0 +1,16 @@
+{
+  "id": "gitlab-cli",
+  "version": "1.0.0",
+  "name": "GitLab CLI",
+  "description": "Ставит glab готовым бинарником из официального GitLab Release и проверяет его по опубликованному SHA-256 checksum.",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "1.116.0",
+      "description": "Версия glab, например 1.116.0, или latest."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}

@@ -30,6 +30,11 @@
       "resolved": "ghcr.io/takexito/devcontainer-features/codex-cli@sha256:6c232e8efc9246da927c01a58164b7af1798262d7b7112074b08f9b781f64b69",
       "integrity": "sha256:6c232e8efc9246da927c01a58164b7af1798262d7b7112074b08f9b781f64b69"
     },
+    "ghcr.io/takexito/devcontainer-features/gitlab-cli:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/takexito/devcontainer-features/gitlab-cli@sha256:3ef4123a99428300bbb9003ef5f0a7f5993ba08d3b461a050a62eb75c8b6c592",
+      "integrity": "sha256:3ef4123a99428300bbb9003ef5f0a7f5993ba08d3b461a050a62eb75c8b6c592"
+    },
     "ghcr.io/takexito/devcontainer-features/gitleaks:1": {
       "version": "1.0.0",
       "resolved": "ghcr.io/takexito/devcontainer-features/gitleaks@sha256:96a3c25cc27c709978e9c7e1a111d13e303f43175712fff035b7b9bd1606d16a",
