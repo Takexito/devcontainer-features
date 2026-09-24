@@ -34,7 +34,7 @@ devc up my-app --stack rust --clone <url>   # или --init, если с нул�
 
 | стек | образ | что внутри | тома проекта | общие тома |
 |---|---|---|---|---|
-| `base` | `base-dev` | Debian 13, mise, gh, tmux, rg, fd, build-essential, gitleaks, Claude Code, Codex | `ssh`, `mise` | `dev-claude`, `dev-codex`, `dev-gh` |
+| `base` | `base-dev` | Debian 13, mise, gh, glab, tmux, rg, fd, build-essential, gitleaks, Claude Code, Codex | `ssh`, `mise` | `dev-claude`, `dev-codex`, `dev-gh`, `dev-glab` |
 | `web` | `web-dev` | base + Node 22, pnpm, yarn | те же | + `dev-npm` |
 | `rust` | `rust-dev` | base + rustup stable, rust-analyzer, clippy, rustfmt, cargo-nextest, libssl-dev | + `target` | + `dev-cargo-registry` |
 | `android` | `android-dev` | base + JDK 17, Android SDK 34/35, Kotlin LSP | + `gradle`, `konan`, `android` | + `dev-kotlin-lsp-kmp` (только чтение) |
@@ -75,6 +75,7 @@ sshd. Поэтому портов нет вообще: ни выбирать, н
 
 ```sh
 gh auth login
+glab auth login
 claude
 codex login --device-auth
 ```
@@ -125,7 +126,7 @@ intellij-server has expired`. Ритуал: поднять версию в фи�
 свежие сборки иногда появляются в комментариях к issue раньше, чем в GitHub
 Releases.
 
-**Тома `dev-*` общие.** В них авторизации агентов и gh, реестр crates, кеш npm
+**Тома `dev-*` общие.** В них авторизации агентов, gh и glab, реестр crates, кеш npm
 и KMP-сборка: снесёшь `dev-claude` — разлогинятся все проекты. `devc rm`
 их не трогает и отказывается работать с именами, начинающимися на `dev-`.
 
@@ -139,9 +140,83 @@ Releases.
 теряются при `--rebuild`. Реестр crates — в общем томе, его не теряем.
 Нужен инструмент навсегда — добавь его в `images/rust` и пересобери образ.
 
+**Устройство redroid одно на машину, и adb к нему — только с хоста.**
+Второй инстанс не поднимется: у legacy-binder context manager один на
+`/dev/binder` (`BINDER_SET_CONTEXT_MGR already set`), а binderfs в ядре Debian
+выключен. Про adb важнее: если агент внутри контейнера сделает свой
+`adb connect`, поднимется второй adb-сервер, и два клиента к одному adbd дают
+пляску `device`↔`offline` и битые скриншоты — то есть mobile-mcp вернёт мусор,
+а не ошибку. Устройство трогать **только тулами mobile-mcp**; adb в контейнере
+остаётся для сборки.
+
+**adb на хосте — копия из образа `android-dev`**, в `/opt/platform-tools`.
+Версии клиента и сервера обязаны совпадать, иначе клиент попытается убить
+чужой сервер и не сможет. Пересобрал `devc build android` с новым
+platform-tools — перекопируй и хостовый.
+
+**`.claude/settings.local.json` обязан быть вне git.** Claude Code пропускает
+этот файл при проверке одобрения MCP, если он под контролем версий (иначе
+репозиторий разрешал бы себе серверы сам). Уедет в индекс — сервер молча
+станет `⏸ Pending approval`. `devc up` дописывает строку в `.gitignore`.
+
+**Новый мобильный проект надо один раз открыть в `claude` вручную.** Пока в
+`~/.claude/.claude.json` нет записи проекта с `hasTrustDialogAccepted`, Claude
+Code вообще не смотрит в `settings.local.json`, и оба сервера висят
+`⏸ Pending approval` — при том что файлы на месте и в `.gitignore`. Лечится
+одним интерактивным запуском `claude` в каталоге проекта; дальше одобрение
+берётся из `settings.local.json` и переживает `--rebuild`. Проверяется так:
+в `walk-android` `enabledMcpjsonServers` в `.claude.json` пустой, а сервер
+всё равно `✔ Connected`.
+
+**Мак офлайн — это 30 секунд на старте сессии.** `mobile-mac` честно ждёт
+таймаута соединения. Надолго уехали с маком — убрать
+`DEVC_MOBILE_MCP_MAC_URL` из `~/.bashrc` и прогнать `devc up`, сервер уйдёт
+из `.mcp.json`.
+
 **Агенты стоят нативными бинарниками**: `claude` в `~/.local/bin`, `codex`
 в `/usr/local/bin`. Node в `base` нет; нужен `npx` — `mise use node@22`
 в проекте или стек `web`.
+
+## Телефон
+
+Агенты в android-стеке умеют тыкать живой Android: смотреть экран, жать,
+вводить текст, ставить APK. Устройство — **redroid** на хосте (nested virt
+netcup не даёт, AVD здесь невозможен в принципе), управление — MCP-сервер
+[mobile-mcp](https://github.com/mobile-next/mobile-mcp).
+
+Node из `android-dev` убран намеренно, поэтому mobile-mcp живёт на хосте,
+а контейнер ходит к нему через шлюз docker0:
+
+    контейнер → http://172.17.0.1:8971/mcp → mobile-mcp → adb → redroid:5599
+
+Три сервиса на хосте, все в автозагрузке:
+
+| юнит | что делает |
+|---|---|
+| `adb-server.service` | держит adb-сервер на 127.0.0.1:5037 |
+| `redroid-adb.timer` | раз в минуту `adb connect 127.0.0.1:5599`, лечит гонки старта |
+| `mobile-mcp.service` | сам MCP-сервер на 172.17.0.1:8971 |
+
+Сам redroid — обычный контейнер `redroid` с `--restart unless-stopped`,
+данные в `/var/lib/redroid/data`. Модули закреплены
+(`/etc/modules-load.d/redroid.conf`, `/etc/modprobe.d/redroid.conf`),
+права на `/dev/binder*` даёт udev-правило `99-redroid-binder.rules`.
+
+`.mcp.json` и `.claude/settings.local.json` генерирует `devc up` — только для
+стека `android`, адреса берутся из `DEVC_MOBILE_MCP_URL` и
+`DEVC_MOBILE_MCP_MAC_URL`. Пересборка контейнера не нужна: файлы лежат в
+bind-mount проекта и подхватываются следующей сессией агента.
+
+Mac (симуляторы iOS и реальный телефон) подключается вторым сервером через
+tailnet:
+
+    DEVC_MOBILE_MCP_MAC_URL=http://100.x.y.z:8971/mcp devc up cambridge-dictionary
+
+На маке — `npm i -g @mobilenext/mobile-mcp@1.0.3` и
+`mcp-server-mobile --listen $(tailscale ip -4):8971`, плюс Xcode CLI tools.
+
+Диагностика по порядку: `adb devices` → `systemctl is-active adb-server
+mobile-mcp` → `claude mcp list` внутри контейнера.
 
 ## Пересобрать образы
 
@@ -164,9 +239,9 @@ devcontainer features publish -r ghcr.io -n takexito/devcontainer-features ./src
 
 ## Незакрыто
 
-- **redroid не восстановлен** после уборки. При настройке первым делом
-  закрепить модули `binder_linux` и `loop` через `/etc/modules-load.d`,
-  иначе после перезагрузки не поднимется.
+- **Персистентность обвязки телефона не проверена перезагрузкой.** Модули,
+  udev-правило и юниты закреплены, но машина с тех пор не перезагружалась.
+  При ближайшем плановом ребуте пройти `adb devices` и `claude mcp list`.
 
 ---
 

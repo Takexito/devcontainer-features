@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -12,6 +13,10 @@ type Options struct {
 	Image string
 	Mem   string // пусто — DefaultMem стека
 	CPUs  string // пусто — DefaultCPUs стека
+	// Адреса mobile-mcp. Пусто — сервер в .mcp.json не попадает: иначе проект
+	// ловил бы «failed to connect», пока второй конец не поднят.
+	MobileMCPURL    string // redroid на хосте, через шлюз docker0
+	MobileMCPMacURL string // симуляторы iOS и телефон на Mac, по tailnet
 }
 
 // Files — то, что devc up кладёт в проект, плюс тома, которые надо создать
@@ -19,7 +24,10 @@ type Options struct {
 type Files struct {
 	Devcontainer   []byte
 	PostCreate     []byte
-	Zed            []byte // nil — стеку не нужен
+	Zed            []byte   // nil — стеку не нужен
+	MCP            []byte   // .mcp.json; nil — стеку не нужен
+	ClaudeServers  []string // имена серверов для enabledMcpjsonServers
+	Gitignore      []string // строки, которых не должно не хватать в .gitignore
 	ProjectVolumes []string
 	Marker         Marker
 }
@@ -124,11 +132,60 @@ func Render(name string, st Stack, o Options) (Files, error) {
 	if st.Zed != "" {
 		f.Zed = []byte(st.Zed)
 	}
+	if st.MobileMCP {
+		mcp, names, err := mobileMCP(o)
+		if err != nil {
+			return Files{}, err
+		}
+		if mcp != nil {
+			f.MCP, f.ClaudeServers = mcp, names
+			f.Gitignore = []string{"/.mcp.json", "/.claude/settings.local.json"}
+		}
+	}
 	return f, nil
 }
 
+// mcpServer — запись в .mcp.json. Транспорт именно sse, не http: сервер
+// mobile-mcp отвечает на GET /mcp кадром «event: endpoint» с sessionId, то
+// есть говорит на старом двухэндпоинтном SSE, а не на Streamable HTTP.
+type mcpServer struct {
+	Type string `json:"type"`
+	URL  string `json:"url"`
+}
+
+// mobileMCP — .mcp.json с удалёнными серверами mobile-mcp. Сервер живёт на
+// хосте (node и adb там уже есть, из android-образа node убран намеренно), а
+// контейнер ходит к нему по http через шлюз docker0.
+func mobileMCP(o Options) ([]byte, []string, error) {
+	servers := map[string]mcpServer{}
+	var names []string
+	if o.MobileMCPURL != "" {
+		servers["mobile"] = mcpServer{Type: "sse", URL: o.MobileMCPURL}
+		names = append(names, "mobile")
+	}
+	if o.MobileMCPMacURL != "" {
+		servers["mobile-mac"] = mcpServer{Type: "sse", URL: o.MobileMCPMacURL}
+		names = append(names, "mobile-mac")
+	}
+	if len(servers) == 0 {
+		return nil, nil, nil
+	}
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetEscapeHTML(false)
+	enc.SetIndent("", "  ")
+	// encoding/json сортирует ключи map, вывод детерминирован.
+	if err := enc.Encode(struct {
+		MCPServers map[string]mcpServer `json:"mcpServers"`
+	}{servers}); err != nil {
+		return nil, nil, err
+	}
+	sort.Strings(names)
+	return buf.Bytes(), names, nil
+}
+
 // volumes — тома в порядке монтирования: проектные (ssh, mise, стековые),
-// затем общие (стековые, авторизации агентов и gh).
+// затем общие (стековые, авторизации агентов, gh и glab).
 func volumes(name string, st Stack) []Volume {
 	res := []Volume{
 		{Name: name + "-ssh", Target: "/home/dev/.ssh"},
@@ -145,11 +202,12 @@ func volumes(name string, st Stack) []Volume {
 		res = append(res, Volume{Name: name + "-" + v.Name, Target: v.Target, ReadOnly: v.ReadOnly})
 	}
 	res = append(res, shared...)
-	// Авторизации агентов и gh общие: логин один раз на все проекты.
+	// Авторизации агентов, gh и glab общие: логин один раз на все проекты.
 	res = append(res,
 		Volume{Name: "dev-claude", Target: "/home/dev/.claude", Shared: true},
 		Volume{Name: "dev-codex", Target: "/home/dev/.codex", Shared: true},
 		Volume{Name: "dev-gh", Target: "/home/dev/.config/gh", Shared: true},
+		Volume{Name: "dev-glab", Target: "/home/dev/.config/glab-cli", Shared: true},
 	)
 	return res
 }

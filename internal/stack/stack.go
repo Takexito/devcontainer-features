@@ -19,6 +19,7 @@ type Stack struct {
 	PostCreate  string   // bash-фрагмент после общего блока post-create
 	Report      []string // строки в конце post-create, обычно echo ">> ..."
 	Zed         string   // содержимое .zed/settings.json; пусто — не нужен
+	MobileMCP   bool     // стеку нужен .mcp.json: агент драйвит устройство через mobile-mcp
 	DefaultMem  string
 	DefaultCPUs string
 }
@@ -34,7 +35,8 @@ type Marker struct {
 }
 
 // Generator — версия формата генерируемых файлов.
-const Generator = 1
+// 2: у android-стека появились .mcp.json и .claude/settings.local.json.
+const Generator = 2
 
 var names = []string{"base", "web", "rust", "android"}
 
@@ -109,6 +111,7 @@ var registry = map[string]Stack{
 			`echo ">> Kotlin LSP: $LSP_KIND"`,
 		},
 		Zed:         androidZed,
+		MobileMCP:   true,
 		DefaultMem:  "10g",
 		DefaultCPUs: "6",
 	},

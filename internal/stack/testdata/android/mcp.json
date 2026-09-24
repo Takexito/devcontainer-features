@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "mobile": {
+      "type": "sse",
+      "url": "http://172.17.0.1:8971/mcp"
+    },
+    "mobile-mac": {
+      "type": "sse",
+      "url": "http://100.64.0.2:8971/mcp"
+    }
+  }
+}

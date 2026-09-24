@@ -13,7 +13,7 @@ own() {
     [ "$(stat -c %u "$d")" = "$(id -u)" ] || sudo chown -R dev:dev "$d"
   done
 }
-own "/home/dev/.ssh" "/home/dev/.local/share/mise" "/home/dev/.gradle" "/home/dev/.konan" "/home/dev/.android" "/home/dev/.claude" "/home/dev/.codex" "/home/dev/.config/gh"
+own "/home/dev/.ssh" "/home/dev/.local/share/mise" "/home/dev/.gradle" "/home/dev/.konan" "/home/dev/.android" "/home/dev/.claude" "/home/dev/.codex" "/home/dev/.config/gh" "/home/dev/.config/glab-cli"
 # Недостающих родителей точек монтирования docker тоже создаёт от root.
 sudo chown dev:dev "$HOME/.local" "$HOME/.local/share" "$HOME/.config" 2>/dev/null || true
 chmod 700 "$HOME/.ssh" 2>/dev/null || true

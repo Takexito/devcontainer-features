@@ -39,7 +39,12 @@ func TestRenderGolden(t *testing.T) {
 		if !ok {
 			t.Fatalf("стек %s не зарегистрирован", name)
 		}
-		f, err := Render("demo", st, Options{Image: "ghcr.io/takexito/" + name + "-dev:1"})
+		// Адреса фиксированные: golden должен быть стабильным.
+		f, err := Render("demo", st, Options{
+			Image:           "ghcr.io/takexito/" + name + "-dev:1",
+			MobileMCPURL:    "http://172.17.0.1:8971/mcp",
+			MobileMCPMacURL: "http://100.64.0.2:8971/mcp",
+		})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -52,6 +57,55 @@ func TestRenderGolden(t *testing.T) {
 		} else if _, err := os.Stat(zed); !errors.Is(err, fs.ErrNotExist) {
 			t.Errorf("%s: у стека %s нет настроек Zed, а golden есть", zed, name)
 		}
+		mcp := filepath.Join(dir, "mcp.json")
+		if f.MCP != nil {
+			golden(t, mcp, f.MCP)
+		} else if _, err := os.Stat(mcp); !errors.Is(err, fs.ErrNotExist) {
+			t.Errorf("%s: стеку %s mobile-mcp не нужен, а golden есть", mcp, name)
+		}
+	}
+}
+
+func TestRenderMobileMCPOnlyAndroid(t *testing.T) {
+	for _, name := range Names() {
+		st, _ := Get(name)
+		f, err := Render("app", st, Options{Image: "img", MobileMCPURL: "http://172.17.0.1:8971/mcp"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if (f.MCP != nil) != (name == "android") {
+			t.Errorf("стек %s: MCP != nil = %v", name, f.MCP != nil)
+		}
+	}
+}
+
+// Без адресов .mcp.json не пишется: иначе проект ловил бы «failed to connect».
+func TestRenderMobileMCPEmpty(t *testing.T) {
+	st, _ := Get("android")
+	f, err := Render("app", st, Options{Image: "img"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if f.MCP != nil || f.ClaudeServers != nil || f.Gitignore != nil {
+		t.Errorf("без адресов ничего не должно генерироваться: %q %v %v", f.MCP, f.ClaudeServers, f.Gitignore)
+	}
+}
+
+func TestRenderMobileMCPServers(t *testing.T) {
+	st, _ := Get("android")
+	f, err := Render("app", st, Options{Image: "img", MobileMCPURL: "http://172.17.0.1:8971/mcp"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Join(f.ClaudeServers, ",") != "mobile" {
+		t.Errorf("ClaudeServers = %v", f.ClaudeServers)
+	}
+	// Транспорт sse, не http: сервер отвечает кадром «event: endpoint».
+	if !bytes.Contains(f.MCP, []byte(`"type": "sse"`)) {
+		t.Errorf("ожидался транспорт sse:\n%s", f.MCP)
+	}
+	if bytes.Contains(f.MCP, []byte("mobile-mac")) {
+		t.Errorf("mac-сервер не задавали, а он есть:\n%s", f.MCP)
 	}
 }
 

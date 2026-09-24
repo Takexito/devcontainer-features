@@ -19,6 +19,8 @@ type Config struct {
 	Registry     string
 	RepoDir      string
 	KmplspSrc    string
+	MobileMCP    string            // адрес mobile-mcp на хосте; пусто — не прописывать
+	MobileMCPMac string            // адрес mobile-mcp на Mac по tailnet; пусто — не прописывать
 	Images       map[string]string // стек → образ
 }
 
@@ -33,6 +35,10 @@ func Load() (*Config, error) {
 	c.Registry = env("DEVC_REGISTRY", "ghcr.io/takexito")
 	c.RepoDir = env("DEVC_REPO_DIR", filepath.Join(c.ProjectsDir, "devcontainer-features"))
 	c.KmplspSrc = env("DEVC_KMPLSP_SRC", filepath.Join(c.ProjectsDir, "kotlin-lsp-kmp"))
+	// Шлюз docker0: сервис слушает 172.17.0.1:8971, ufw пускает туда только
+	// docker0. Mac по умолчанию не прописан — его tailnet-адрес знает хозяин.
+	c.MobileMCP = env("DEVC_MOBILE_MCP_URL", "http://172.17.0.1:8971/mcp")
+	c.MobileMCPMac = env("DEVC_MOBILE_MCP_MAC_URL", "")
 	for _, s := range Stacks {
 		c.Images[s] = env("DEVC_IMAGE_"+strings.ToUpper(s), c.Registry+"/"+s+"-dev:1")
 	}
