@@ -44,6 +44,11 @@ devc up my-app --stack rust --clone <url>   # или --init, если с нул�
 `<name>-mise`, который переживает пересборку. Rust исключение: он через rustup,
 как и на хосте.
 
+Java через mise (`java = "temurin-21"`) ставится сразу при `devc up`, и
+`post-create` пишет её `JAVA_HOME` в `/etc/environment`: шимы дают `java` в PATH,
+но `JAVA_HOME` не выставляют, а Gradle-обвязки ищут JDK именно по нему. Так
+живёт `compose-preview-anywhere` — стек `rust` плюс JDK 21 из `mise.toml`.
+
 Тома проекта зовутся `<name>-<что>`: `my-app-ssh`, `my-app-target`. В `my-app-ssh`
 лежит ключ хоста, поэтому пересборка не выглядит для клиента подменой.
 
@@ -53,8 +58,9 @@ devc up my-app --stack rust --clone <url>   # или --init, если с нул�
 
 **Конфиг, написанный руками.** Если в проекте свой `.devcontainer/devcontainer.json`
 без маркера `customizations.devc`, `devc up` его не трогает и просто поднимает —
-так живут `compose-preview-anywhere` и `kotlin-lsp-kmp`. В `devc ls` у них стек
-`custom`. `--force` перезапишет конфиг сгенерированным.
+в `devc ls` у такого проекта стек `custom`. `--force` перезапишет конфиг
+сгенерированным. Сейчас таких проектов нет: `compose-preview-anywhere` и
+`kotlin-lsp-kmp` переведены на стеки 2026-09-24.
 
 ## Разовая настройка
 
@@ -111,10 +117,9 @@ Kotlin не остаётся никогда.
 
 Собрать или пересобрать том: `devc kmplsp`. Установщик патча написан на Node,
 которого в `android-dev` больше нет, поэтому `devc kmplsp` берёт его через
-`mise x node@22` в том `kotlin-lsp-kmp-mise`. Внутри `~/projects/kotlin-lsp-kmp`
-том подключён на запись, поэтому там короче — `./install.sh /opt/kotlin-lsp/current
-/opt/kmp/current`; Node там даёт `mise.toml` репозитория. Копию для отката
-потом уберёт `devc kmplsp`.
+`mise x node@22` в том `kotlin-lsp-kmp-mise`. Сам `kotlin-lsp-kmp` — обычный
+проект на стеке `android`: том у него, как у всех, только для чтения, поэтому
+публикация сборки — тоже `devc kmplsp` с хоста, а не `./install.sh` изнутри.
 
 ## Грабли
 

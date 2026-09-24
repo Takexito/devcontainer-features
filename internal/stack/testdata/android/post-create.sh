@@ -25,6 +25,17 @@ if ! grep -q 'mise/shims' /etc/environment; then
   sudo sed -i 's|^PATH="|PATH="/home/dev/.local/bin:/home/dev/.local/share/mise/shims:|' /etc/environment
 fi
 
+# JDK из mise.toml проекта. Шимам хватает java в PATH, но JAVA_HOME они не
+# выставляют, а Gradle-обвязки и IDE-серверы ищут JDK именно по нему. Ставим
+# JDK сразу, а не при первом вызове, иначе JAVA_HOME указывать некуда.
+if [ -n "$(cd "$WS" && mise current java 2>/dev/null)" ]; then
+  (cd "$WS" && mise install -q java)
+  JH=$(cd "$WS" && mise where java)
+  sudo sed -i '/^JAVA_HOME=/d' /etc/environment
+  echo "JAVA_HOME=\"$JH\"" | sudo tee -a /etc/environment >/dev/null
+  echo ">> JAVA_HOME=$JH (из mise.toml)"
+fi
+
 # sdk.dir нужен Gradle; local.properties обычно в .gitignore
 if [ -f "$WS/settings.gradle.kts" ] || [ -f "$WS/settings.gradle" ]; then
   touch "$WS/local.properties"
