@@ -100,9 +100,9 @@ func TestRenderMobileMCPServers(t *testing.T) {
 	if strings.Join(f.ClaudeServers, ",") != "mobile" {
 		t.Errorf("ClaudeServers = %v", f.ClaudeServers)
 	}
-	// Транспорт sse, не http: сервер отвечает кадром «event: endpoint».
-	if !bytes.Contains(f.MCP, []byte(`"type": "sse"`)) {
-		t.Errorf("ожидался транспорт sse:\n%s", f.MCP)
+	// Транспорт http, не sse: с 1.0.4 сервер на GET /mcp отвечает 405.
+	if !bytes.Contains(f.MCP, []byte(`"type": "http"`)) {
+		t.Errorf("ожидался транспорт http:\n%s", f.MCP)
 	}
 	if bytes.Contains(f.MCP, []byte("mobile-mac")) {
 		t.Errorf("mac-сервер не задавали, а он есть:\n%s", f.MCP)

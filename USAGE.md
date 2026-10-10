@@ -217,8 +217,16 @@ tailnet:
 
     DEVC_MOBILE_MCP_MAC_URL=http://100.x.y.z:8971/mcp devc up cambridge-dictionary
 
-На маке — `npm i -g @mobilenext/mobile-mcp@1.0.3` и
+На маке — `npm i -g @mobilenext/mobile-mcp@1.0.8` и
 `mcp-server-mobile --listen $(tailscale ip -4):8971`, плюс Xcode CLI tools.
+
+Версия на хосте и на маке — не ниже 1.0.4, и обновлять их надо вместе:
+`devc` пишет обоим серверам транспорт `http`, а 1.0.3 умеет только SSE и
+держит одного клиента на сервер (второй агент получал 409). С 1.0.4 сервер
+stateless, агентов может быть сколько угодно — но устройства у них общие,
+и двое на одном устройстве перебивают друг другу нажатия. Называй агенту ID
+устройства явно: redroid — `127.0.0.1:5599`, остальные показывает
+`mobile_list_available_devices`.
 
 Диагностика по порядку: `adb devices` → `systemctl is-active adb-server
 mobile-mcp` → `claude mcp list` внутри контейнера.

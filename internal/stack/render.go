@@ -145,9 +145,10 @@ func Render(name string, st Stack, o Options) (Files, error) {
 	return f, nil
 }
 
-// mcpServer — запись в .mcp.json. Транспорт именно sse, не http: сервер
-// mobile-mcp отвечает на GET /mcp кадром «event: endpoint» с sessionId, то
-// есть говорит на старом двухэндпоинтном SSE, а не на Streamable HTTP.
+// mcpServer — запись в .mcp.json. Транспорт http (Streamable HTTP): на него
+// mobile-mcp перешёл в 1.0.4, а SSE убрал совсем. До 1.0.3 включительно было
+// наоборот — только SSE и один клиент на сервер, так что сервер старше 1.0.4
+// с этим конфигом не заработает.
 type mcpServer struct {
 	Type string `json:"type"`
 	URL  string `json:"url"`
@@ -160,11 +161,11 @@ func mobileMCP(o Options) ([]byte, []string, error) {
 	servers := map[string]mcpServer{}
 	var names []string
 	if o.MobileMCPURL != "" {
-		servers["mobile"] = mcpServer{Type: "sse", URL: o.MobileMCPURL}
+		servers["mobile"] = mcpServer{Type: "http", URL: o.MobileMCPURL}
 		names = append(names, "mobile")
 	}
 	if o.MobileMCPMacURL != "" {
-		servers["mobile-mac"] = mcpServer{Type: "sse", URL: o.MobileMCPMacURL}
+		servers["mobile-mac"] = mcpServer{Type: "http", URL: o.MobileMCPMacURL}
 		names = append(names, "mobile-mac")
 	}
 	if len(servers) == 0 {
