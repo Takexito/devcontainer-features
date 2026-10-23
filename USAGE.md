@@ -203,7 +203,9 @@ Node из `android-dev` убран намеренно, поэтому mobile-mcp
 | `mobile-mcp.service` | сам MCP-сервер на 172.17.0.1:8971 |
 
 Сам redroid — обычный контейнер `redroid` с `--restart unless-stopped`,
-данные в `/var/lib/redroid/data`. Модули закреплены
+данные в `/var/lib/redroid/data`. Экран 1080×2400 @ 420 dpi (411×914 dp, как
+у современного телефона) задают аргументы `androidboot.redroid_width/height/dpi`
+— поменять их можно только пересозданием контейнера с тем же `/data`. Модули закреплены
 (`/etc/modules-load.d/redroid.conf`, `/etc/modprobe.d/redroid.conf`),
 права на `/dev/binder*` даёт udev-правило `99-redroid-binder.rules`.
 
