@@ -199,13 +199,22 @@ Node из `android-dev` убран намеренно, поэтому mobile-mcp
 | юнит | что делает |
 |---|---|
 | `adb-server.service` | держит adb-сервер на 127.0.0.1:5037 |
-| `redroid-adb.timer` | раз в минуту `adb connect 127.0.0.1:5599`, лечит гонки старта |
+| `redroid-adb.timer` | раз в минуту `adb connect 127.0.0.1:5599`, лечит гонки старта; перед этим `/usr/local/libexec/redroid-adb-ensure` возвращает выключенную отладку |
 | `mobile-mcp.service` | сам MCP-сервер на 172.17.0.1:8971 |
 
 Сам redroid — обычный контейнер `redroid` с `--restart unless-stopped`,
 данные в `/var/lib/redroid/data`. Модули закреплены
 (`/etc/modules-load.d/redroid.conf`, `/etc/modprobe.d/redroid.conf`),
 права на `/dev/binder*` даёт udev-правило `99-redroid-binder.rules`.
+
+**Переключатель «Для разработчиков» убивает adb.** Агент, который ищет в
+Настройках опцию вроде «Вытеснение фоновых Activity», легко попадает по
+главному переключателю на странице «Для разработчиков»: Android ставит
+`adb_enabled=0` и гасит adbd, устройство висит `offline`. Настройка живёт в
+`/data`, так что рестарт контейнера или adb-сервера не помогает. Таймер
+возвращает её сам в течение минуты; руками — `docker exec redroid settings put
+global adb_enabled 1`. Опции разработчика лучше ставить с хоста через
+`settings put global …`, а не через интерфейс.
 
 `.mcp.json` и `.claude/settings.local.json` генерирует `devc up` — только для
 стека `android`, адреса берутся из `DEVC_MOBILE_MCP_URL` и
