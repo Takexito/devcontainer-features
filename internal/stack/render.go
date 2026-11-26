@@ -190,6 +190,8 @@ func mobileMCP(o Options) ([]byte, []string, error) {
 func volumes(name string, st Stack) []Volume {
 	res := []Volume{
 		{Name: name + "-ssh", Target: "/home/dev/.ssh"},
+		{Name: name + "-local-bin", Target: "/home/dev/.local/bin"},
+		{Name: name + "-herdr-state", Target: "/home/dev/.local/state/herdr-core"},
 		// Тулчейны, которые mise ставит по mise.toml проекта, переживают
 		// пересборку контейнера.
 		{Name: name + "-mise", Target: "/home/dev/.local/share/mise"},
@@ -227,8 +229,9 @@ own() {
 `
 
 const postCreateEnv = `# Недостающих родителей точек монтирования docker тоже создаёт от root.
-sudo chown dev:dev "$HOME/.local" "$HOME/.local/share" "$HOME/.config" 2>/dev/null || true
+sudo chown dev:dev "$HOME/.local" "$HOME/.local/share" "$HOME/.local/state" "$HOME/.config" 2>/dev/null || true
 chmod 700 "$HOME/.ssh" 2>/dev/null || true
+chmod 700 "$HOME/.local/state/herdr-core"
 
 # sshd не наследует окружение контейнера: ssh-сессии берут PATH из
 # /etc/environment, который devcontainer CLI заполняет до этого хука, а sshd
@@ -246,6 +249,16 @@ if [ -n "$(cd "$WS" && mise current java 2>/dev/null)" ]; then
   sudo sed -i '/^JAVA_HOME=/d' /etc/environment
   echo "JAVA_HOME=\"$JH\"" | sudo tee -a /etc/environment >/dev/null
   echo ">> JAVA_HOME=$JH (из mise.toml)"
+fi
+`
+
+const postCreateHerdr = `
+# Новые тома получают hc один раз. Дальше версия управляется из Herdr Desktop.
+if ! [ -x "$HOME/.local/bin/hc" ]; then
+  if ! curl -fsSL --connect-timeout 10 --max-time 30 https://releases.herdr.dev/core/install.sh |
+      HC_INSTALL_DIR="$HOME/.local/bin" sh; then
+    echo ">> не удалось установить Herdr Core; установи его через Herdr или повтори post-create" >&2
+  fi
 fi
 `
 
@@ -296,6 +309,7 @@ func postCreate(name string, st Stack, vols []Volume) string {
 		b.WriteString(st.PostCreate)
 	}
 	b.WriteString(postCreateTail)
+	b.WriteString(postCreateHerdr)
 	for _, r := range st.Report {
 		b.WriteString(r)
 		b.WriteString("\n")

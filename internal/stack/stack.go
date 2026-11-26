@@ -36,7 +36,8 @@ type Marker struct {
 
 // Generator — версия формата генерируемых файлов.
 // 2: у android-стека появились .mcp.json и .claude/settings.local.json.
-const Generator = 2
+// 3: бинарники пользователя и состояние Herdr живут в проектных томах.
+const Generator = 3
 
 var names = []string{"base", "web", "rust", "android"}
 

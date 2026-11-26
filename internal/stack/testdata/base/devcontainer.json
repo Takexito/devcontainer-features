@@ -4,7 +4,7 @@
   "customizations": {
     "devc": {
       "stack": "base",
-      "generator": 2,
+      "generator": 3,
       "mem": "4g",
       "cpus": "4"
     }
@@ -16,6 +16,8 @@
   },
   "mounts": [
     "source=demo-ssh,target=/home/dev/.ssh,type=volume",
+    "source=demo-local-bin,target=/home/dev/.local/bin,type=volume",
+    "source=demo-herdr-state,target=/home/dev/.local/state/herdr-core,type=volume",
     "source=demo-mise,target=/home/dev/.local/share/mise,type=volume",
     "source=dev-claude,target=/home/dev/.claude,type=volume",
     "source=dev-codex,target=/home/dev/.codex,type=volume",

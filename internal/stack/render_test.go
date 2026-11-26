@@ -115,7 +115,7 @@ func TestRenderProjectVolumes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"app-ssh", "app-mise", "app-target"}
+	want := []string{"app-ssh", "app-local-bin", "app-herdr-state", "app-mise", "app-target"}
 	if strings.Join(f.ProjectVolumes, ",") != strings.Join(want, ",") {
 		t.Errorf("ProjectVolumes = %v, want %v", f.ProjectVolumes, want)
 	}

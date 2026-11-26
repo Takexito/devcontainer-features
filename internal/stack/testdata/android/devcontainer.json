@@ -4,7 +4,7 @@
   "customizations": {
     "devc": {
       "stack": "android",
-      "generator": 2,
+      "generator": 3,
       "mem": "10g",
       "cpus": "6"
     }
@@ -19,6 +19,8 @@
   },
   "mounts": [
     "source=demo-ssh,target=/home/dev/.ssh,type=volume",
+    "source=demo-local-bin,target=/home/dev/.local/bin,type=volume",
+    "source=demo-herdr-state,target=/home/dev/.local/state/herdr-core,type=volume",
     "source=demo-mise,target=/home/dev/.local/share/mise,type=volume",
     "source=demo-gradle,target=/home/dev/.gradle,type=volume",
     "source=demo-konan,target=/home/dev/.konan,type=volume",

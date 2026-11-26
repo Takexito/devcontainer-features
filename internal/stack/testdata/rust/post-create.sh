@@ -13,10 +13,11 @@ own() {
     [ "$(stat -c %u "$d")" = "$(id -u)" ] || sudo chown -R dev:dev "$d"
   done
 }
-own "/home/dev/.ssh" "/home/dev/.local/share/mise" "/home/dev/target" "/usr/local/cargo/registry" "/home/dev/.claude" "/home/dev/.codex" "/home/dev/.config/gh" "/home/dev/.config/glab-cli"
+own "/home/dev/.ssh" "/home/dev/.local/bin" "/home/dev/.local/state/herdr-core" "/home/dev/.local/share/mise" "/home/dev/target" "/usr/local/cargo/registry" "/home/dev/.claude" "/home/dev/.codex" "/home/dev/.config/gh" "/home/dev/.config/glab-cli"
 # Недостающих родителей точек монтирования docker тоже создаёт от root.
-sudo chown dev:dev "$HOME/.local" "$HOME/.local/share" "$HOME/.config" 2>/dev/null || true
+sudo chown dev:dev "$HOME/.local" "$HOME/.local/share" "$HOME/.local/state" "$HOME/.config" 2>/dev/null || true
 chmod 700 "$HOME/.ssh" 2>/dev/null || true
+chmod 700 "$HOME/.local/state/herdr-core"
 
 # sshd не наследует окружение контейнера: ssh-сессии берут PATH из
 # /etc/environment, который devcontainer CLI заполняет до этого хука, а sshd
@@ -60,5 +61,13 @@ sudo chmod 600 "$KEYDIR/ssh_host_ed25519_key"
 sudo pkill -HUP -x sshd 2>/dev/null || true
 
 echo ">> $(mise --version)"
+
+# Новые тома получают hc один раз. Дальше версия управляется из Herdr Desktop.
+if ! [ -x "$HOME/.local/bin/hc" ]; then
+  if ! curl -fsSL --connect-timeout 10 --max-time 30 https://releases.herdr.dev/core/install.sh |
+      HC_INSTALL_DIR="$HOME/.local/bin" sh; then
+    echo ">> не удалось установить Herdr Core; установи его через Herdr или повтори post-create" >&2
+  fi
+fi
 echo ">> $(rustc --version), $(cargo nextest --version | head -1)"
 echo ">> $(rust-analyzer --version)"

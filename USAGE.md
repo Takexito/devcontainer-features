@@ -96,6 +96,18 @@ codex login --device-auth
 | `Takexito/dotfiles` | git-identity, шелл, tmux, pre-commit |
 | `Takexito/kotlin-lsp-kmp` | патч Kotlin LSP под KMP; том `dev-kotlin-lsp-kmp` |
 
+## Herdr Desktop
+
+При первом создании проектного тома `<name>-local-bin` хук `post-create`
+устанавливает `hc` в `~/.local/bin`. Обновляй Core контейнера через
+**Settings → Machines** в Herdr Desktop. Установленная версия и состояние
+Herdr в томе `<name>-herdr-state` сохраняются при `devc up <name> --rebuild`.
+`devc rm <name>` удаляет оба тома.
+
+Существующему контейнеру нужен один rebuild для подключения томов. Если
+Herdr уже использовался в таком контейнере, перед первым rebuild сохрани
+`~/.local/state/herdr-core`, чтобы перенести существующую привязку и данные.
+
 ## Kotlin LSP и KMP
 
 Штатный сервер JetBrains не импортирует source sets KMP: модуль приезжает
