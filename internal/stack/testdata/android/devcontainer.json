@@ -4,7 +4,7 @@
   "customizations": {
     "devc": {
       "stack": "android",
-      "generator": 3,
+      "generator": 4,
       "mem": "10g",
       "cpus": "6"
     }
@@ -30,7 +30,8 @@
     "source=dev-codex,target=/home/dev/.codex,type=volume",
     "source=dev-gh,target=/home/dev/.config/gh,type=volume",
     "source=dev-glab,target=/home/dev/.config/glab-cli,type=volume",
-    "source=${localEnv:HOME}/.ssh/authorized_keys,target=/etc/ssh/authorized_keys.host,type=bind,readonly"
+    "source=${localEnv:HOME}/.ssh/authorized_keys,target=/etc/ssh/authorized_keys.host,type=bind,readonly",
+    "source=${localEnv:HOME}/.local/share/devc/machine-id/demo,target=/etc/machine-id,type=bind,readonly"
   ],
   "runArgs": [
     "--name=demo",

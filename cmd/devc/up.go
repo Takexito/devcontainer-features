@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -113,7 +115,47 @@ func runUp(ctx context.Context, cfg *config.Config, args []string) error {
 			fmt.Fprintf(os.Stderr, ">> конфиг изменился, а контейнер уже есть: применится после devc up %s --rebuild\n", name)
 		}
 	}
+	if err := ensureMachineID(name); err != nil {
+		return fmt.Errorf("machine-id проекта %s: %w", name, err)
+	}
 	return bringUp(ctx, cfg, cli, p, opts.Image, *rebuild, *quiet)
+}
+
+// Herdr treats saved state as a clone if /etc/machine-id changes.
+func ensureMachineID(name string) error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+	dir := filepath.Join(home, ".local", "share", "devc", "machine-id")
+	path := filepath.Join(dir, name)
+	if _, err := os.Stat(path); err == nil {
+		return nil
+	} else if !errors.Is(err, fs.ErrNotExist) {
+		return err
+	}
+	if err := os.MkdirAll(dir, 0700); err != nil {
+		return err
+	}
+	file, err := os.CreateTemp(dir, ".machine-id-*")
+	if err != nil {
+		return err
+	}
+	defer os.Remove(file.Name())
+	id := make([]byte, 16)
+	if _, err := rand.Read(id); err != nil {
+		file.Close()
+		return err
+	}
+	_, writeErr := file.WriteString(hex.EncodeToString(id) + "\n")
+	if err := errors.Join(writeErr, file.Chmod(0444), file.Close()); err != nil {
+		return err
+	}
+	// Concurrent starts must all use the same ID.
+	if err := os.Link(file.Name(), path); !errors.Is(err, fs.ErrExist) {
+		return err
+	}
+	return nil
 }
 
 func ensureDir(ctx context.Context, dir, cloneURL string, initRepo bool) error {

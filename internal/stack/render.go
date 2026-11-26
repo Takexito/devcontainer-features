@@ -85,7 +85,7 @@ func Render(name string, st Stack, o Options) (Files, error) {
 	}
 
 	f := Files{Marker: Marker{Stack: st.Name, Generator: Generator, Mem: mem, CPUs: cpus}}
-	mounts := make([]string, 0, len(vols)+1)
+	mounts := make([]string, 0, len(vols)+2)
 	for _, v := range vols {
 		m := fmt.Sprintf("source=%s,target=%s,type=volume", v.Name, v.Target)
 		if v.ReadOnly {
@@ -98,7 +98,10 @@ func Render(name string, st Stack, o Options) (Files, error) {
 	}
 	// Второй источник ключей для sshd — authorized_keys хоста: новое
 	// устройство достаточно прописать на VPS.
-	mounts = append(mounts, "source=${localEnv:HOME}/.ssh/authorized_keys,target=/etc/ssh/authorized_keys.host,type=bind,readonly")
+	mounts = append(mounts,
+		"source=${localEnv:HOME}/.ssh/authorized_keys,target=/etc/ssh/authorized_keys.host,type=bind,readonly",
+		fmt.Sprintf("source=${localEnv:HOME}/.local/share/devc/machine-id/%s,target=/etc/machine-id,type=bind,readonly", name),
+	)
 
 	dc := devcontainerJSON{
 		Name:           name,
